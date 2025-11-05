@@ -148,9 +148,9 @@ public class Attachment implements Transferable {
             MessageBodyReader<T> mbr =
                 providers.getMessageBodyReader(cls, cls, new Annotation[]{}, getContentType());
             if (mbr != null) {
-                try {
+                try (InputStream is = getDataHandler().getInputStream()) {
                     return mbr.readFrom(cls, cls, new Annotation[]{}, getContentType(),
-                                        headers, getDataHandler().getInputStream());
+                                        headers, is);
                 } catch (Exception ex) {
                     throw ExceptionUtils.toInternalServerErrorException(ex, null);
                 }

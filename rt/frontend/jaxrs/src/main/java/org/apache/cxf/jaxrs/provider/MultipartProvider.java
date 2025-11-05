@@ -230,9 +230,10 @@ public class MultipartProvider extends AbstractConfigurableProvider
             MessageBodyReader<T> r =
                 mc.getProviders().getMessageBodyReader(c, t, anns, multipart.getContentType());
             if (r != null) {
-                InputStream is = multipart.getDataHandler().getInputStream();
-                return r.readFrom(c, t, anns, multipart.getContentType(), multipart.getHeaders(),
-                                  is);
+                try (InputStream is = multipart.getDataHandler().getInputStream()) {
+                    return r.readFrom(c, t, anns, multipart.getContentType(), multipart.getHeaders(),
+                                      is);
+                }
             }
         }
         return null;
